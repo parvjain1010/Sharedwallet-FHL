@@ -5,7 +5,7 @@ from enum import Enum
 class UPIBase(BaseModel):
     upi_id: str
     user_id: int | None = None
-    group_id: int
+    group_id: int | None = None
 
 class UPI(UPIBase):
     id: int
