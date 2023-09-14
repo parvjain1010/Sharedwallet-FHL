@@ -9,7 +9,7 @@ class TransactionBase(BaseModel):
 class Transaction(TransactionBase):
     transaction_id: int
     group_id : int | None = None
-    user_id : int | None = None
+    user_id : int
     
 
     class Config:

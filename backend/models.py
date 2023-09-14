@@ -33,10 +33,10 @@ class splitTransactions(Base):
 class Transaction(Base):
     __tablename__ = "transactions"
 
-    transaction_id = Column(Integer, primary_key=True, index=True)
-    group_id = Column(Integer)
+    id = Column(Integer, primary_key=True, index=True)
+    group_id = Column(Integer, nullable=True)
     user_id = Column(Integer)
-    title = Column(String, unique=True, index=True)
+    title = Column(String)
     amount = Column(Float)
     transaction_date = Column(String)
 
@@ -54,14 +54,14 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-    name = Column(String)
-    phone_number = Column(String)
+    name = Column(String, nullable=True)
+    phone_number = Column(String, nullable=True)
 
 class UPI(Base):
     __tablename__ = "upi"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer)
+    user_id = Column(Integer, nullable=True)
     group_id = Column(Integer)
     upi_id = Column(String)
 
@@ -72,4 +72,4 @@ class Wallet(Base):
     id = Column(Integer, primary_key=True, index=True)
     balance = Column(Integer)
     user_id = Column(Integer)
-    group_id = Column(Integer)
+    group_id = Column(Integer, nullable=True)
