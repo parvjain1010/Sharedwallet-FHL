@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from backend import models
 from backend import crud
-import backend.schemas.users as user_schema
+import backend.schemas.transactions as transactions_schema
 from backend.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -24,3 +24,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@router.get("/all-transactions", response_model=List[transactions_schema.Transaction])
+def get_alltransactions(db: Session = Depends(get_db)):
+    return crud.get_alltransactions(db=db)
