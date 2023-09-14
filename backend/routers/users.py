@@ -33,6 +33,13 @@ def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
 
+@router.post("/update-user/{user_id}")
+def update_user(user: user_schema.User, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=user.email)
+    if db_user is None:
+        raise HTTPException(status_code=400, detail="No such user exists")
+    return crud.update_user(db=db, user=user)
+
 @router.get("/all-users", response_model=List[user_schema.User])
 def get_allusers(db: Session = Depends(get_db)):
     return crud.get_allusers(db=db)
@@ -52,6 +59,6 @@ def get_allusers(user_id:int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="No user found for current email")
     return db_user
 
-# @router.get("/authorise-user")
-# def authorise_users(db: Session = Depends(get_db)):
-#     return crud.get_allusers(db=db)
+@router.post("/authorise-user")
+def authorise_users(user: user_schema.UserCreate, db: Session = Depends(get_db)):
+    return crud.authorize_users(db=db, user= user)

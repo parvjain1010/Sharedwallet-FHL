@@ -62,7 +62,7 @@ class UPI(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=True)
-    group_id = Column(Integer)
+    group_id = Column(Integer, nullable= True)
     upi_id = Column(String)
 
 
