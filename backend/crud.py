@@ -15,5 +15,11 @@ def create_user(db: Session, user: user_schema.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def get_user(db: Session):
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.User).filter(models.User.email == email).first()
+
+def get_user_by_user_id(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+def get_allusers(db: Session):
     return db.query(models.User).all()

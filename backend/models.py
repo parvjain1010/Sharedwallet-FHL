@@ -13,6 +13,14 @@ class Group(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
 
+class GroupAdmin(Base):
+    __tablename__ = "group-admins"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    group_id = Column(Integer) 
+    name = Column(String)
+
 
 class splitTransactions(Base):
     __tablename__ = "split-transactions"
