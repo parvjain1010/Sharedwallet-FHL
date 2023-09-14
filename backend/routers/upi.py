@@ -33,3 +33,10 @@ def add_upi(upi: upi_schema.UPIBase, db: Session = Depends(get_db)):
     if db_upi:
         raise HTTPException(status_code=400, detail="This UPI has already been added")
     return crud.create_upi(db=db, upi = upi)
+
+@router.get("/remove-upi/{upi_id}", response_model=bool)
+def remove_upi(upi_id: str, db: Session = Depends(get_db)):
+    db_upi = crud.get_upi_by_upi_id(db,upi_id=upi_id)
+    if db_upi is None:
+        raise HTTPException(status_code=400, detail="This UPI does not exist")
+    return crud.remove_upi_id(db,upi_id=upi_id)

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class userGroupBase(BaseModel):
     user_id: int
     group_id: int
-    status: str
+    status: bool
 
 
 class userGroup(userGroupBase):
