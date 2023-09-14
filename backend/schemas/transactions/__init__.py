@@ -12,7 +12,5 @@ class TransactionBase(BaseModel):
 class Transaction(TransactionBase):
     id: int
     
-    
-
     class Config:
         orm_mode = True
