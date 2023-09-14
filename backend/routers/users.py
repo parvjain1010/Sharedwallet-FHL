@@ -26,18 +26,18 @@ def get_db():
         db.close()
 
 
-@router.post("/create-users/")
+@router.post("/create-users/",response_model=user_schema.User)
 def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+    
+    db_user_new = crud.create_user(db=db, user=user)
+    crud.create_wallet(db=db,user_id=db_user_new.id)
+    return db_user_new
 
-@router.post("/update-user/{user_id}")
+@router.post("/update-user/")
 def update_user(user: user_schema.User, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail="No such user exists")
     return crud.update_user(db=db, user=user)
 
 @router.get("/all-users", response_model=List[user_schema.User])

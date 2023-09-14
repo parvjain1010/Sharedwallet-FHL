@@ -71,7 +71,6 @@ def create_transaction(db: Session, transaction: transaction_schema.TransactionB
         title = transaction.title,
         amount = transaction.amount,
         transaction_date = transaction.transaction_date,
-        group_id = transaction.group_id,
         user_id = transaction.user_id,
         target_wallet_id = transaction.target_wallet_id,
         source_wallet_id = transaction.source_wallet_id
@@ -121,7 +120,7 @@ def create_upi(db: Session, upi: upi_schema.UPIBase):
     db.refresh(db_upi)
     return db_upi
 
-def remove_upi(db: Session, upi_id: str):
+def remove_upi_id(db: Session, upi_id: str):
     items_to_delete = db.query(models.UPI).filter(models.UPI.upi_id == upi_id).all()
 
     # Loop through the matching items and delete them
@@ -171,7 +170,7 @@ def remove_member_from_group(db: Session, group_id: int, user_id : int):
     return True
 
 def add_admin_for_group(db: Session, group_id : int, user_id: int):
-    db_admin = db.query(models.GroupAdmin).filter(models.GroupAdmin.user_id == user_id and models.GroupAdmin.group_id == group_id).all()
+    db_admin = db.query(models.GroupAdmin).filter(models.GroupAdmin.user_id == user_id and models.GroupAdmin.group_id == group_id).first()
     if db_admin is None:
         db_admin_group = models.GroupAdmin(
             user_id = user_id,
@@ -181,8 +180,8 @@ def add_admin_for_group(db: Session, group_id : int, user_id: int):
         db.commit()
         db.refresh(db_admin_group)
 
-        return db_admin_group
-    return db_admin
+        return True
+    return True
 
 def remove_admin_from_group(db: Session, group_id: int, user_id : int):
     items_to_delete = db.query(models.GroupAdmin).filter(models.GroupAdmin.user_id == user_id and models.GroupAdmin.group_id == group_id).all()
@@ -194,3 +193,45 @@ def remove_admin_from_group(db: Session, group_id: int, user_id : int):
     # Commit the changes to the database
     db.commit()
     return True
+
+# Wallet cruds
+def get_wallets(db: Session):
+    return db.query(models.Wallet).all()
+
+def create_wallet(db: Session, group_id : int| None = None, user_id: int | None = None):
+    
+    db_wallet = models.Wallet(
+        user_id = user_id,
+        group_id = group_id,
+        balance = 0
+    )
+    db.add(db_wallet)
+    db.commit()
+    db.refresh(db_wallet)
+
+    return db_wallet
+
+def get_wallet_by_wallet_id(db: Session, wallet_id : int):
+    return db.query(models.Wallet).filter(models.Wallet.id == wallet_id).first()
+
+def get_wallet_by_user_id(db: Session, user_id : int):
+    return db.query(models.Wallet).filter(models.Wallet.user_id == user_id).first()
+
+def get_wallet_by_group_id(db: Session, group_id : int):
+    return db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first()
+
+def update_wallet_balance(db: Session, wallet_id: int, amount: float):
+    # Query the database to retrieve the wallet by wallet_id
+    db_wallet = db.query(models.Wallet).filter(models.Wallet.id == wallet_id).first()
+
+    if db_wallet:
+        # Update the wallet's balance with the provided value
+        db_wallet.balance = db_wallet.balance + amount
+
+        db.commit()
+        db.refresh(db_wallet)
+
+    return db_wallet
+
+
+
