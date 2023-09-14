@@ -53,6 +53,8 @@ def get_allusers(db: Session):
     return db.query(models.User).all()
 
 # Transaction crud
+def get_alltransactions(db: Session):
+    return db.query(models.Transaction).all()
 
 def get_transaction_by_id(db: Session, id: int):
     return db.query(models.Transaction).filter(models.Transaction.id == id).first()
@@ -62,9 +64,6 @@ def get_transaction_for_group(db: Session, group_id: int):
 
 def get_transaction_for_user(db: Session, user_id: int):
     return db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
-
-def get_allusers(db: Session):
-    return db.query(models.User).all()
 
 def create_transaction(db: Session, transaction: transaction_schema.TransactionBase):
     db_transaction = models.Transaction(
