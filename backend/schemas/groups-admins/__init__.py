@@ -2,13 +2,12 @@ from pydantic import BaseModel
 
 
 
-class userGroupBase(BaseModel):
-    user_id: int
+class GroupAdminBase(BaseModel):
     group_id: int
-    status: str
+    user_id: int
 
 
-class userGroup(userGroupBase):
+class GroupAdmin(GroupAdminBase):
     id: int
 
     class Config:
