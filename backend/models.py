@@ -19,7 +19,6 @@ class GroupAdmin(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
     group_id = Column(Integer) 
-    name = Column(String)
 
 
 class splitTransactions(Base):
@@ -47,6 +46,7 @@ class userGroup(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
     group_id = Column(Integer)
+    status = Column(String)
 
 class User(Base):
     __tablename__ = "users"
@@ -57,10 +57,19 @@ class User(Base):
     name = Column(String)
     phone_number = Column(String)
 
+class UPI(Base):
+    __tablename__ = "upi"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    group_id = Column(Integer)
+    upi_id = Column(String)
+
 
 class Wallet(Base):
     __tablename__ = "wallets"
 
     id = Column(Integer, primary_key=True, index=True)
-    wallet_type = Column(String)
     balance = Column(Integer)
+    user_id = Column(Integer)
+    group_id = Column(Integer)

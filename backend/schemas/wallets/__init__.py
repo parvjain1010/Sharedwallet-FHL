@@ -8,8 +8,9 @@ class WalletType(Enum):
 
 
 class WalletBase(BaseModel):
-    wallet_type: WalletType
     balance: float
+    user_id: int
+    group_id: int
 
 class Wallet(WalletBase):
     id: int
