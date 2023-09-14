@@ -34,10 +34,9 @@ class Transaction(Base):
     __tablename__ = "transactions"
 
     id = Column(Integer, primary_key=True, index=True)
-    group_id = Column(Integer, nullable=True)
     user_id = Column(Integer)
-    source_wallet_id = Column(Integer)
-    target_wallet_id = Column(Integer)
+    source_wallet_id = Column(Integer, nullable= True)
+    target_wallet_id = Column(Integer, nullable= True)
     title = Column(String)
     amount = Column(Float)
     transaction_date = Column(String)
@@ -73,5 +72,5 @@ class Wallet(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     balance = Column(Integer)
-    user_id = Column(Integer)
+    user_id = Column(Integer, nullable=True)
     group_id = Column(Integer, nullable=True)

@@ -25,12 +25,15 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/create-group/")
-def create_group(group: group_schema.GroupBase, db: Session = Depends(get_db)):
-    return crud.create_group(db=db, group = group)
+@router.post("/create-group/", response_model=group_schema.Group)
+def create_group(user_id: int, group: group_schema.GroupBase, db: Session = Depends(get_db)):
+    db_group = crud.create_group(db=db, group = group)
+    crud.create_wallet(db=db,group_id=db_group.id)
+    crud.add_admin_for_group(db=db,group_id=db_group.id,user_id=user_id)
+    return db_group
 
 @router.post("/add-members/{group_id}")
-def create_user(group_id:int, members: List[int], db: Session = Depends(get_db)):
+def add_members(group_id:int, members: List[int], db: Session = Depends(get_db)):
     db_group = crud.get_group_by_groupid(db, group_id=group_id)
     if db_group is None:
         raise HTTPException(status_code=400, detail="Group doesnt exist anymore")
@@ -38,7 +41,7 @@ def create_user(group_id:int, members: List[int], db: Session = Depends(get_db))
         db_user = crud.get_user_by_user_id(db, user_id=member)
         if db_user is None:
             raise HTTPException(status_code=400, detail="User doesnt exist anymore")
-        crud.add_user_group(db=db,group_id=group_id, member = member)
+        crud.add_user_group(db=db,group_id=group_id, user_id = member)
 
     return True
 

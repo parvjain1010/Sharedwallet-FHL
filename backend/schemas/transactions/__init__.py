@@ -5,10 +5,9 @@ class TransactionBase(BaseModel):
     title: str
     amount: float
     transaction_date : str
-    group_id : int | None = None
     user_id : int
-    target_wallet_id : int
-    source_wallet_id : int
+    target_wallet_id : int | None
+    source_wallet_id : int | None
 
 class Transaction(TransactionBase):
     id: int

@@ -9,7 +9,7 @@ class WalletType(Enum):
 
 class WalletBase(BaseModel):
     balance: float
-    user_id: int
+    user_id: int | None = None
     group_id: int | None = None
 
 class Wallet(WalletBase):
