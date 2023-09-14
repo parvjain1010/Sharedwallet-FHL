@@ -1,5 +1,5 @@
 from __future__ import annotations
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, BOOLEAN
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from backend.schemas.wallets import WalletType
@@ -36,6 +36,8 @@ class Transaction(Base):
     id = Column(Integer, primary_key=True, index=True)
     group_id = Column(Integer, nullable=True)
     user_id = Column(Integer)
+    source_wallet_id = Column(Integer)
+    target_wallet_id = Column(Integer)
     title = Column(String)
     amount = Column(Float)
     transaction_date = Column(String)
@@ -46,7 +48,7 @@ class userGroup(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
     group_id = Column(Integer)
-    status = Column(String)
+    status = Column(BOOLEAN)
 
 class User(Base):
     __tablename__ = "users"
