@@ -5,11 +5,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function HomeScreen({ navigation }) {
   const userId = '1'
   useEffect(() => {
+    
+  // Add a listener to execute code when the screen is focused
+  const unsubscribe = navigation.addListener('focus', () => {
+    console.log("HomeScreen is focused");
     async function func() {
       await AsyncStorage.setItem("userId", userId);
     };
     func();
-  }, []);
+    // You can add additional logic to run when the screen is focused here
+  });
+
+  // Cleanup the listener when the component unmounts
+  return unsubscribe;
+}, [navigation]); // Include navigation in the dependency array
+
   return (
     <View>
       <Text>Welcome to Hisaab</Text>
