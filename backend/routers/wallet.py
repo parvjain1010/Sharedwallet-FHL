@@ -60,14 +60,6 @@ def add_money_to_personal_wallet(user_id: int, balance: float, db: Session = Dep
         raise HTTPException(status_code=400, detail="User does not exist")
     db_wallet = crud.get_wallet_by_user_id(db = db, user_id=user_id)
     crud.update_wallet_balance(db=db, wallet_id=db_wallet.id, amount= balance)
-
-@router.post("/add_money_to_personal_wallet/")
-def add_money_to_personal_wallet(user_id: int, balance: float, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_user_id(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail="User does not exist")
-    db_wallet = crud.get_wallet_by_user_id(db = db, user_id=user_id)
-    crud.update_wallet_balance(db=db, wallet_id=db_wallet.id, amount= balance)
     crud.create_transaction(db=db,transaction=transaction_schema.TransactionBase(
         title="Money added to Personal Wallet",
         amount = balance,

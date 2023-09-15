@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.responses import RedirectResponse
 
+from fastapi.middleware.cors import CORSMiddleware
+
 from backend.routers import users
 from backend.routers import transactions
 from backend.routers import groups
