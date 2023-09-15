@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function HomeScreen({navigation }) {
-  const userName = "Parv Jain"
-  useEffect(() =>{
-    async function func(){
-      await AsyncStorage.setItem("userName", userName);
+function HomeScreen({ navigation }) {
+  const userId = '1'
+  useEffect(() => {
+    async function func() {
+      await AsyncStorage.setItem("userId", userId);
     };
-  func();
-},[]);
+    func();
+  }, []);
   return (
     <View>
       <Text>Welcome to Hisaab</Text>
@@ -19,7 +19,7 @@ function HomeScreen({navigation }) {
       /> */}
       <Button
         title="Profile"
-        onPress={() => navigation.navigate('Profile'  )}
+        onPress={() => navigation.navigate('Profile')}
       />
       {/* <Button
         title="Login"
