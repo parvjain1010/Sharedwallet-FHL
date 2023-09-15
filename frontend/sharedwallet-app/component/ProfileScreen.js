@@ -1,17 +1,29 @@
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Button } from 'react-native';
 
 function ProfileScreen({ navigation }) {
+  const [userName,setuserName] = useState(null);
+  useEffect (() => {
+    async function func(){
+      const storedUserName = await AsyncStorage.getItem("userName");
+      setuserName(storedUserName);
+    };
+    func();
+  },
+  []
+  );
+  const logout = () => {
+    console.log("User logout!");
+    navigation.navigate('Home');
+  };
   return (
     <View>
-      <Text>Welcome to the Profile Screen</Text>
+      <Text>Welcome to the Profile Screen of {userName}</Text>
+
       <Button
-        title="Go back to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-      <Button
-        title="Go to AllUsers"
-        onPress={() => navigation.navigate('AllUsers')}
+        title="Logout"
+        onPress={logout}
       />
     </View>
   );

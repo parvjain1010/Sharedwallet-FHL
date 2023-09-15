@@ -1,18 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function HomeScreen({ navigation }) {
+function HomeScreen({navigation }) {
+  const userName = "Parv Jain"
+  useEffect(() =>{
+    async function func(){
+      await AsyncStorage.setItem("userName", userName);
+    };
+  func();
+},[]);
   return (
     <View>
-      <Text>Welcome to the Home Screen</Text>
+      <Text>Welcome to Hisaab</Text>
+      {/* <Button
+        title="Profile"
+        onPress={() => navigation.navigate('Profile', {userName})}
+      /> */}
       <Button
-        title="Go to Profile"
-        onPress={() => navigation.navigate('Profile')}
+        title="Profile"
+        onPress={() => navigation.navigate('Profile'  )}
+      />
+      {/* <Button
+        title="Login"
+        onPress={() => navigation.navigate('Login')}
       />
       <Button
-        title="Go to AllUsers"
-        onPress={() => navigation.navigate('AllUsers')}
-      />
+        title="Register"
+        onPress={() => navigation.navigate('Register')}
+      /> */}
     </View>
   );
 }
