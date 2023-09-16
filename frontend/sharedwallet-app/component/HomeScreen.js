@@ -5,59 +5,59 @@ import homescrenbutton from './images/HomescreenButton.png'
 import { ApiService } from '../api/api';
 
 function HomeScreen({ navigation }) {
-  const [userId,setUserId] = useState('1');
+  const [userId, setUserId] = useState('1');
   const [walletBalance, setWalletBalance] = useState(null);
   const [groups, setGroups] = useState([]);
-  
-  
+
+
   useEffect(() => {
-    
-  // Add a listener to execute code when the screen is focused
-  const unsubscribe = navigation.addListener('focus', () => {
-    console.log("HomeScreen is focused");
-    async function func() {
-      const storedUserId = await AsyncStorage.getItem("userId");
-      console.log(storedUserId);
 
-      fetchWalletBalanceAPI(storedUserId)
-      .then((response) => {
-        console.log("We are here!")
-        setWalletBalance(response.data.balance);
-      })
-      .catch((error) => {
-        console.error('Error fetching wallet balance:', error);
-      });
+    // Add a listener to execute code when the screen is focused
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log("HomeScreen is focused");
+      async function func() {
+        const storedUserId = await AsyncStorage.getItem("userId");
+        console.log(storedUserId);
 
-    // Fetch user groups
-    const groups = await ApiService.getGroupsForUserId(storedUserId);
-    setGroups(groups)
-    };
-    func();
-  });
+        fetchWalletBalanceAPI(storedUserId)
+          .then((response) => {
+            console.log("We are here!")
+            setWalletBalance(response.data.balance);
+          })
+          .catch((error) => {
+            console.error('Error fetching wallet balance:', error);
+          });
 
-  return unsubscribe;
+        // Fetch user groups
+        const groups = await ApiService.getGroupsForUserId(storedUserId);
+        setGroups(groups)
+      };
+      func();
+    });
 
-}, [navigation]); // Include navigation in the dependency array
+    return unsubscribe;
 
-const renderItem = ({ item }) => (
-  <View>
-    <Text>{item}</Text>
-  </View>
-);
+  }, [navigation]); // Include navigation in the dependency array
 
-const fetchWalletBalanceAPI = async (userId) => {
-  // Simulate an API call to fetch wallet balance for the user
-  // Replace this with your actual API endpoint
-  const balance = await ApiService.getWalletBalanceByUserId(userId);
-  console.log(balance.toString());
-  return { data: { balance: balance } };
-};
+  const renderItem = ({ item }) => (
+    <View>
+      <Text>{item}</Text>
+    </View>
+  );
 
-const fetchUserGroupsAPI = async (userId) => {
-  // Simulate an API call to fetch groups for the user
-  // Replace this with your actual API endpoint
-  return { data: { groups: ['Group A', 'Group B', 'Group C'] } };
-};
+  const fetchWalletBalanceAPI = async (userId) => {
+    // Simulate an API call to fetch wallet balance for the user
+    // Replace this with your actual API endpoint
+    const balance = await ApiService.getWalletBalanceByUserId(userId);
+    console.log(balance.toString());
+    return { data: { balance: balance } };
+  };
+
+  const fetchUserGroupsAPI = async (userId) => {
+    // Simulate an API call to fetch groups for the user
+    // Replace this with your actual API endpoint
+    return { data: { groups: ['Group A', 'Group B', 'Group C'] } };
+  };
 
   const scanToPay = () => {
     console.log('Scanning to pay...');
@@ -83,33 +83,33 @@ const fetchUserGroupsAPI = async (userId) => {
 
   return (
     <View>
-    <View>
-      <Text>Welcome to Hisaab</Text>
-      <Text>Wallet Balance: {walletBalance !== null ? `$${walletBalance}` : 'Loading...'}</Text>
-    </View>
-    <View>
-      <Button title="Scan to Pay" onPress={scanToPay} />
-      <Button title="Add Money to Wallet" onPress={addMoneyToWallet} />
-      <Button title="Send Money" onPress={sendMoney} />
-    </View>
-    {/* Render the list of groups here */}
-    {groups&&(<View>
-            <Text>User Groups:</Text>
-            <FlatList
-              data={groups}
-              renderItem={renderGroupItem}
-              keyExtractor={(item) => item}
-              ListEmptyComponent={<Text>No groups found.</Text>}
-            />
-          </View>)}
-    <View>
-      {/* Bottom navigation */}
-      <Button title="Home" />
-      <Button title="Wallet" onPress={goToWallet} />
-      <Button title="+" />
-      <Button title="History" />
-      <Button title="Account" onPress={() => navigation.navigate("Profile")}/>
-      <Image
+      <View>
+        <Text>Welcome to Hisaab</Text>
+        <Text>Wallet Balance: {walletBalance !== null ? `$${walletBalance}` : 'Loading...'}</Text>
+      </View>
+      <View>
+        <Button title="Scan to Pay" onPress={scanToPay} />
+        <Button title="Add Money to Wallet" onPress={addMoneyToWallet} />
+        <Button title="Send Money" onPress={sendMoney} />
+      </View>
+      {/* Render the list of groups here */}
+      {groups && (<View>
+        <Text>User Groups:</Text>
+        <FlatList
+          data={groups}
+          renderItem={renderGroupItem}
+          keyExtractor={(item) => item}
+          ListEmptyComponent={<Text>No groups found.</Text>}
+        />
+      </View>)}
+      <View>
+        {/* Bottom navigation */}
+        <Button title="Home" />
+        <Button title="Wallet" onPress={goToWallet} />
+        <Button title="+" />
+        <Button title="History" onPress={() => navigation.navigate("Transactions")} />
+        <Button title="Account" onPress={() => navigation.navigate("Profile")} />
+        <Image
           source={homescrenbutton}
           style={{ width: 50, height: 50 }} // Adjust the dimensions as needed
           onPress={() => {
@@ -117,9 +117,9 @@ const fetchUserGroupsAPI = async (userId) => {
             console.log('Home button pressed');
           }}
         />
-    </View>
+      </View>
 
-  </View>
+    </View>
 
   );
 }
