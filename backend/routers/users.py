@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from backend import models
 from backend import crud
 import backend.schemas.users as user_schema
+import backend.schemas.groups as group_schema
+import backend.schemas.upi as upi_schema
 from backend.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -62,3 +64,11 @@ def get_allusers(user_id:int, db: Session = Depends(get_db)):
 @router.post("/authorise-user")
 def authorise_users(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     return crud.authorize_users(db=db, user= user)
+
+@router.get("/all-groups/{user_id}", response_model=List[group_schema.Group])
+def get_all_groups_for_user(user_id:int, db: Session = Depends(get_db)):
+    return crud.get_all_groups_for_user(db=db, user_id =user_id)
+
+@router.get("/all-upis/{user_id}", response_model=List[upi_schema.UPI])
+def get_all_upis_for_user(user_id:int, db: Session = Depends(get_db)):
+    return crud.get_all_upis_for_user(db=db, user_id =user_id)

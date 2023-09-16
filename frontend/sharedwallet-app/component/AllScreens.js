@@ -9,6 +9,9 @@ export default function AllScreens ({navigation}) {
       <Button title="Profile Screen" onPress={() => navigation.navigate('Profile')} />
       <Button title="Home Screen" onPress={() => navigation.navigate('Home')} />
       <Button title="Start Screen" onPress = {() => navigation.navigate('Start')}/>
+      <Button title="Wallet Screen" onPress = {() => navigation.navigate('UserWallet')}/>
+      <Button title="Add Money to Wallet Screen" onPress = {() => navigation.navigate('AddMoneyToWallet')}/>
+      <Button title="Transactions Screen" onPress = {() => navigation.navigate('Transactions')}/>
     </View>
   )
 }

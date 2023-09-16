@@ -29,13 +29,8 @@ function HomeScreen({ navigation }) {
       });
 
     // Fetch user groups
-    fetchUserGroupsAPI(storedUserId)
-      .then((response) => {
-        setGroups(response.data.groups);
-      })
-      .catch((error) => {
-        console.error('Error fetching user groups:', error);
-      });
+    const groups = await ApiService.getGroupsForUserId(storedUserId);
+    setGroups(groups)
     };
     func();
   });
@@ -49,15 +44,6 @@ const renderItem = ({ item }) => (
     <Text>{item}</Text>
   </View>
 );
-
-
-useEffect(()=> {
-  console.log("WalletBalanceUpdated!");
-}, [walletBalance])
-
-useEffect(()=> {
-  console.log("User Groups Updated!");
-}, [groups])
 
 const fetchWalletBalanceAPI = async (userId) => {
   // Simulate an API call to fetch wallet balance for the user
@@ -89,8 +75,11 @@ const fetchUserGroupsAPI = async (userId) => {
     console.log('On Wallet Page...');
   };
 
-
-
+  const renderGroupItem = ({ item }) => (
+    <View>
+      <Text>Group Name: {item.name}</Text>
+    </View>
+  );
 
   return (
     <View>
@@ -104,15 +93,15 @@ const fetchUserGroupsAPI = async (userId) => {
       <Button title="Send Money" onPress={sendMoney} />
     </View>
     {/* Render the list of groups here */}
-    <View>
-        <Text>User Groups:</Text>
-        <FlatList
-          data={groups}
-          renderItem={renderItem}
-          keyExtractor={(item) => item}
-          ListEmptyComponent={<Text>No groups found.</Text>}
-        />
-      </View>
+    {groups&&(<View>
+            <Text>User Groups:</Text>
+            <FlatList
+              data={groups}
+              renderItem={renderGroupItem}
+              keyExtractor={(item) => item}
+              ListEmptyComponent={<Text>No groups found.</Text>}
+            />
+          </View>)}
     <View>
       {/* Bottom navigation */}
       <Button title="Home" />

@@ -43,6 +43,43 @@ export class ApiService {
             throw error;
         }
     }
+    static async addMoneyToPersonalWallet(userId,amount) {
+        try {
+            const uId = parseInt(userId,10);
+            const amounttobeAdded = parseFloat(amount);
+            const api = `${BASE_URI}/wallet/add_money_to_personal_wallet/?user_id=${uId}&balance=${amounttobeAdded}`;
+            console.log(api);
+            const response = await axios.post(api);
+            return true;
+        } catch (error) {
+            console.error("Error adding money to wallet :", error);
+            throw error;
+        }
+    }
+    static async getUpisForUserId(userId) {
+        try {
+            const uId = parseInt(userId,10);
+            const api = `${BASE_URI}/users/all-upis/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user upis :", error);
+            throw error;
+        }
+    }
+    static async getGroupsForUserId(userId) {
+        try {
+            const uId = parseInt(userId,10);
+            const api = `${BASE_URI}/users/all-groups/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user groups :", error);
+            throw error;
+        }
+    }
 }
 
 export class AuthService {
