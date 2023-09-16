@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-// const BASE_URI = 'http://10.104.248.147:8000';
-const BASE_URI = 'http://10.94.248.91:8000';
+const BASE_URI = 'http://10.104.248.147:8000';
+// const BASE_URI = 'http://10.94.248.91:8000';
 
 // uvicorn backend.routers.main:app --host 10.104.248.147 --port 8000 --reload
 
@@ -130,6 +130,27 @@ export class ApiService {
         } catch (error) {
             console.error("Error fetching outgoing group transactions :", error);
             throw error;
+        }
+    }
+}
+
+
+export class GroupService {
+    static async createGroup(userId, name, description, expense_type, budget) {
+        try {
+            const query_uri = `${BASE_URI}/groups/create-group/?user_id=${userId}`;
+            const response = await axios.post(query_uri, {
+                name: name,
+                description, description,
+                budget: budget,
+                expense_type: expense_type
+            });
+            console.log(JSON.stringify(response.data));
+            return response.data.id;
+        }
+        catch (err) {
+            console.error("Error creating group");
+            throw err;
         }
     }
 }

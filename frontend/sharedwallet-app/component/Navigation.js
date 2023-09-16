@@ -13,6 +13,7 @@ import RegisterScreen from './RegisterScreen';
 import UserWalletScreen from './UserWalletScreen';
 import AddMoneyToWalletScreen from './AddMoneyToWallet';
 import TransactionScreen from './TransactionScreen';
+import AddGroupScreen from './AddGroupScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ const Navigation = () => {
         <Stack.Screen name="UserWallet" component={UserWalletScreen} />
         <Stack.Screen name="AddMoneyToWallet" component={AddMoneyToWalletScreen} />
         <Stack.Screen name="Transactions" component={TransactionScreen} />
+        <Stack.Screen name="AddGroup" component={AddGroupScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

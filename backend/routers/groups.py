@@ -33,6 +33,12 @@ def create_group(user_id: int, group: group_schema.GroupBase, db: Session = Depe
     crud.add_user_group(db=db,group_id=db_group.id, user_id = user_id)
     return db_group
 
+@router.get("/all-user-groups/{user_id}")
+def get_all_user_groups(user_id:int, db: Session = Depends(get_db)):
+    db_usergroups = crud.get_all_user_groups(db, user_id)
+    # return [ug.group_id for ug in db_usergroups]
+    return db_usergroups
+
 @router.post("/add-members/{group_id}")
 def add_members(group_id:int, members: List[int], db: Session = Depends(get_db)):
     db_group = crud.get_group_by_groupid(db, group_id=group_id)
