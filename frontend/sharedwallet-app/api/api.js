@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 
-const BASE_URI = 'http://10.104.251.13:8000';
+const BASE_URI = 'http://10.104.248.147:8000';
 // const BASE_URI = 'http://192.168.29.127:8000';
 
+// uvicorn backend.routers.main:app --host 10.104.248.147 --port 8000 --reload
+
 export class ApiService {
-    static async getAllUsers() {
+    static async getAllScreens() {
         try {
             const response = await axios.get(`${BASE_URI}/users/all-users`);
             return response.data;
@@ -36,6 +38,7 @@ export class AuthService {
                 email: user_email,
                 password: user_password
               });
+              console.log("From Auth Service");
               console.log(response.data)
               return response.data
         }
