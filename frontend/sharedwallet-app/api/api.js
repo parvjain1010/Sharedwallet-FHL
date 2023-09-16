@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-// const BASE_URI = 'http://10.104.248.147:8000';
-const BASE_URI = 'http://10.94.248.91:8000';
+const BASE_URI = 'http://10.104.248.147:8000';
+// const BASE_URI = 'http://10.94.248.91:8000';
 
 // uvicorn backend.routers.main:app --host 10.104.248.147 --port 8000 --reload
 

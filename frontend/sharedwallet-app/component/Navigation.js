@@ -10,6 +10,7 @@ import AllScreens from './AllScreens';
 import StartScreen from './StartScreen';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
+import AddGroupScreen from './AddGroupScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,11 @@ const Navigation = () => {
         <Stack.Screen name="Start" component={StartScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+              name="AddGroup"
+              component={AddGroupScreen}
+              options={{ headerShown: false }}
+            />
       </Stack.Navigator>
     </NavigationContainer>
   );
