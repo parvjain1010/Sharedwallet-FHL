@@ -2,6 +2,8 @@ import axios from 'axios';
 
 
 const BASE_URI = 'http://10.104.251.13:8000';
+// const BASE_URI = 'http://192.168.29.127:8000';
+
 export class ApiService {
     static async getAllUsers() {
         try {
@@ -9,6 +11,18 @@ export class ApiService {
             return response.data;
         } catch (error) {
             console.error("Error fetching all users :", error);
+            throw error;
+        }
+    }
+    static async getUserByUserId(id) {
+        try {
+            const idval = parseInt(id,10);
+            const api = `${BASE_URI}/users/get-user-by-id/${idval}`
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user :", error);
             throw error;
         }
     }
@@ -50,8 +64,8 @@ export class AuthService {
     }
 
     static async logout(user_id) {
-        return -1;
         // Not Implemented
+        return -1;
     }
 }
 

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function AllUsers ({title,navigation}) {
+export default function AllUsers ({navigation}) {
 
   const [users, setUsers] = useState([]);
 
@@ -18,7 +18,6 @@ export default function AllUsers ({title,navigation}) {
   }, []);
   return (
     <View>
-      <Text>{title}</Text> 
       <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
