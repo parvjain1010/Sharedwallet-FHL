@@ -30,6 +30,7 @@ def create_group(user_id: int, group: group_schema.GroupBase, db: Session = Depe
     db_group = crud.create_group(db=db, group = group)
     crud.create_wallet(db=db,group_id=db_group.id)
     crud.add_admin_for_group(db=db,group_id=db_group.id,user_id=user_id)
+    crud.add_user_group(db=db,group_id=db_group.id, user_id = user_id)
     return db_group
 
 @router.post("/add-members/{group_id}")

@@ -46,6 +46,15 @@ def authorize_users(db: Session, user: user_schema.UserCreate):
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.User).filter(models.User.email == email).first()
+
+def get_all_groups_for_user(db: Session, user_id:int):
+    return db.query(models.Group).join(models.userGroup, models.userGroup.group_id == models.Group.id).filter(models.userGroup.user_id == user_id).all()
+
+def get_all_upis_for_user(db: Session, user_id:int):
+    return db.query(models.UPI).filter(models.UPI.user_id == user_id).all()
+
 def get_user_by_user_id(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
@@ -59,8 +68,14 @@ def get_alltransactions(db: Session):
 def get_transaction_by_id(db: Session, id: int):
     return db.query(models.Transaction).filter(models.Transaction.id == id).first()
 
-def get_transaction_for_group(db: Session, group_id: int):
-    return db.query(models.Transaction).filter(models.Transaction.group_id == group_id).all()
+def get_incoming_transactions(db: Session, wallet_id: int):
+    return db.query(models.Transaction).filter(models.Transaction.target_wallet_id == wallet_id).all()
+
+def get_outgoing_transactions(db: Session, wallet_id: int):
+    return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id).all()
+
+def get_all_transaction_by_wallet_id(db: Session, wallet_id: int):
+    return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id or models.Transaction.target_wallet_id == wallet_id).first()
 
 def get_transaction_for_user(db: Session, user_id: int):
     return db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
