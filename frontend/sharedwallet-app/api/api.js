@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-const BASE_URI = 'http://10.104.248.147:8000';
-// const BASE_URI = 'http://192.168.29.127:8000';
+// const BASE_URI = 'http://10.104.248.147:8000';
+const BASE_URI = 'http://10.94.248.91:8000';
 
 // uvicorn backend.routers.main:app --host 10.104.248.147 --port 8000 --reload
 
@@ -25,6 +25,21 @@ export class ApiService {
             return response.data;
         } catch (error) {
             console.error("Error fetching user :", error);
+            throw error;
+        }
+    }
+
+    static async getWalletBalanceByUserId(id) {
+        try {
+            const idval = parseInt(id,10);
+            const api = `${BASE_URI}/wallet/get-balance_for_user/${idval}`
+            console.log(api);
+            const response = await axios.get(api);
+            console.log('Wallet balanace is: ')
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching wallet :", error);
             throw error;
         }
     }

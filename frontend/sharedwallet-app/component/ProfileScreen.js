@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button } from 'react-native';
-import ApiService from '../api/api';
+import {ApiService} from '../api/api';
 
 function ProfileScreen({ navigation }) {
   const [userId, setuserId] = useState(null);
@@ -34,7 +34,7 @@ function ProfileScreen({ navigation }) {
   const logout = async() => {
     console.log("User logout!");
     await AsyncStorage.setItem("userId",'0');
-    navigation.navigate('Home');
+    navigation.navigate('Start');
   };
   return (
     <View>
@@ -51,6 +51,10 @@ function ProfileScreen({ navigation }) {
       <Button
         title="Logout"
         onPress={logout}
+      />
+      <Button
+        title="Home"
+        onPress={() => navigation.navigate("Home")}
       />
     </View>
   );
