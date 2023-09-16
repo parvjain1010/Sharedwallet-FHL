@@ -80,6 +80,58 @@ export class ApiService {
             throw error;
         }
     }
+
+    static async getIncomingTransactionsForUser(userId) {
+        try {
+            const uId = parseInt(userId,10);
+            const api = `${BASE_URI}/transactions/incoming-transactions-user/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching incoming user transactions :", error);
+            throw error;
+        }
+    }
+
+    static async getOutgoingTransactionsForUser(userId) {
+        try {
+            const uId = parseInt(userId,10);
+            const api = `${BASE_URI}/transactions/outgoing-transactions-user/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching outgoing user transactions :", error);
+            throw error;
+        }
+    }
+
+    static async getIncomingTransactionsForGroup(groupId) {
+        try {
+            const uId = parseInt(groupId,10);
+            const api = `${BASE_URI}/transactions/incoming-transactions-group/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching incoming group transactions :", error);
+            throw error;
+        }
+    }
+
+    static async getOutgoingTransactionsForGroup(groupId) {
+        try {
+            const uId = parseInt(groupId,10);
+            const api = `${BASE_URI}/transactions/outgoing-transactions-group/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching outgoing group transactions :", error);
+            throw error;
+        }
+    }
 }
 
 export class AuthService {

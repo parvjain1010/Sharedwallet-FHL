@@ -92,7 +92,7 @@ function ProfileScreen({ navigation }) {
       
       <Button
         title="My Transactions"
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("Transactions")}
       />
       <Button
         title="Home"
