@@ -26,7 +26,7 @@ def get_db():
         db.close()
 
 
-@router.post("/create-users/",response_model=user_schema.User)
+@router.post("/create-users",response_model=user_schema.User)
 def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
@@ -36,7 +36,7 @@ def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     crud.create_wallet(db=db,user_id=db_user_new.id)
     return db_user_new
 
-@router.post("/update-user/")
+@router.post("/update-user")
 def update_user(user: user_schema.User, db: Session = Depends(get_db)):
     return crud.update_user(db=db, user=user)
 

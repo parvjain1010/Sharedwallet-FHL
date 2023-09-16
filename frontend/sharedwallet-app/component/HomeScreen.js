@@ -13,6 +13,14 @@ function HomeScreen({ navigation }) {
         title="Go to AllUsers"
         onPress={() => navigation.navigate('AllUsers')}
       />
+      <Button
+        title="Login"
+        onPress={() => navigation.navigate('Login')}
+      />
+      <Button
+        title="Register"
+        onPress={() => navigation.navigate('Register')}
+      />
     </View>
   );
 }
