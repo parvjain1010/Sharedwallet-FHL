@@ -106,7 +106,7 @@ function HomeScreen({ navigation }) {
         {/* Bottom navigation */}
         <Button title="Home" />
         <Button title="Wallet" onPress={goToWallet} />
-        <Button title="+" />
+        <Button title="+" onPress={() => navigation.navigate("AddGroup")}/>
         <Button title="History" onPress={() => navigation.navigate("Transactions")} />
         <Button title="Account" onPress={() => navigation.navigate("Profile")} />
         <Image

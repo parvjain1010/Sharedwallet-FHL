@@ -12,6 +12,9 @@ class Group(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    description = Column(String, nullable=True)
+    expense_type = Column(String, default="One Time")
+    budget = Column(Integer, default=0)
 
 class GroupAdmin(Base):
     __tablename__ = "group-admins"

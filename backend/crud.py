@@ -152,12 +152,18 @@ def get_upi_by_upi_id(db: Session, upi_id: str):
 
 def create_group(db: Session, group: group_schema.Group):
     db_group = models.Group(
-        name = group.name
+        name = group.name,
+        description = group.description,
+        expense_type = group.expense_type,
+        budget = group.budget
     )
     db.add(db_group)
     db.commit()
     db.refresh(db_group)
     return db_group
+
+def get_all_user_groups(db: Session, user_id: int):
+    return db.query(models.userGroup).filter(models.userGroup.user_id == user_id).all()
 
 def add_user_group(db: Session, group_id : int, user_id: int):
     db_user_group = models.userGroup(
