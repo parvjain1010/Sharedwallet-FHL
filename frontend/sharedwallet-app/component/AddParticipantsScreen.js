@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, TextInput, FlatList, SafeAreaView } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckBox from '@react-native-community/checkbox';
+import Checkbox from 'expo-checkbox';
 import { ApiService } from '../api/api';
-import RadioButton from './atoms/RadioButton';
 
 function AddParticipantsScreen({ navigation }) {
 
@@ -34,7 +33,7 @@ function AddParticipantsScreen({ navigation }) {
 
     const renderItem = ({item}) => (
       <View>
-        <CheckBox value={selectedMembers.includes(item.id)}
+        <Checkbox value={selectedMembers.includes(item.id)}
           onValueChange={() => handleCheckboxToggle(item.id)}/>
         <Text>{item.name}</Text>
       </View>

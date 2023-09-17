@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-// uvicorn backend.routers.main:app --host 10.104.248.78 --port 8000 --reload
+// uvicorn backend.routers.main:app --host 192.168.29.84 --port 8000 --reload
 
-// const BASE_URI = 'http://10.104.248.78:8000';
-const BASE_URI = 'http://192.168.1.48:8000';
+const BASE_URI = 'http://192.168.29.84:8000';
+// const BASE_URI = 'http://10.94.248.91:8000';
 
 
 export class ApiService {
@@ -109,9 +109,29 @@ export class ApiService {
     }
 
     static async getGroupMembersByGroupId(groupId) {
-
+        try {
+            const query_uri = `${BASE_URI}/groups/get-group-members/${groupId}`;
+            const response = await axios.get(query_uri);
+            console.log("api.js : getting group members")
+            return response.data
+        }
+        catch (err) {
+            console.error(`Error getting group from group id : ${groupId}`, err);
+            throw err;
+        }   
     }
 
+    static async getGroupWalletByGroupId(groupId) {
+        try {
+            const query_uri = `${BASE_URI}/wallet/get-group-wallet/${groupId}`;
+            const response = await axios.get(query_uri);
+            return response.data
+        }
+        catch (err) {
+            console.error(`Error getting group from group id : ${groupId}`, err);
+            throw err;
+        }        
+    }
 
     // Deposits APIs
     static async addMoneyToPersonalWallet(userId,amount) {
@@ -137,7 +157,23 @@ export class ApiService {
     }
     
     // Expenses/Payments APIs
-    
+    static async addGroupExpense(expenseTitle, amount, transactionDate, usersInvolved, splits, groupId, userId) {
+        try {
+            const query_uri = `${BASE_URI}/groups/make-payment/${groupId}/${userId}`;
+            const response = await axios.post(query_uri, {
+                    amount: amount,
+                    title: expenseTitle,
+                    transaction_date: transactionDate,
+                    users: usersInvolved,
+                    splits: splits
+            });
+            return response.data
+        }
+        catch (err) {
+            console.error(`Error getting group from group id : ${groupId}`, err);
+            throw err;
+        }
+    }
     
     // Transactions API
     static async getTransactionsForGroup(groupId) {

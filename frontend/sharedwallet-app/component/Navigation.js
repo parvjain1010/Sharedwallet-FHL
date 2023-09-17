@@ -14,8 +14,10 @@ import UserWalletScreen from './UserWalletScreen';
 import AddMoneyToWalletScreen from './AddMoneyToWallet';
 import TransactionScreen from './TransactionScreen';
 import AddGroupScreen from './AddGroupScreen';
+import AddExpenseScreen from './AddExpenseScreen';
 import AddParticipantsScreen from './AddParticipantsScreen';
 import GroupPageScreen from './GroupPageScreen';
+import ExpenseSplitScreen from './ExpenseSplitScreen';
 // import FigmaHomeScreen from './FigmaHomeScreen';
 import MakePaymentScreen1 from './MakePaymentScreen1';
 import MakePaymentScreen2 from './MakePaymentScreen2';
@@ -36,6 +38,8 @@ const Navigation = () => {
         <Stack.Screen name="AddMoneyToWallet" component={AddMoneyToWalletScreen} />
         <Stack.Screen name="Transactions" component={TransactionScreen} />
         <Stack.Screen name="AddGroup" component={AddGroupScreen} />
+        <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+        <Stack.Screen name="ExpenseSplit" component={ExpenseSplitScreen} />
         <Stack.Screen name="GroupPage" component={GroupPageScreen} />
         <Stack.Screen name="AddParticipants" component={AddParticipantsScreen} />
         {/* <Stack.Screen name="Figma" component={FigmaHomeScreen} /> */}

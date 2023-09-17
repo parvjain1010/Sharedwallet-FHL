@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from backend import models
 from backend import crud
 import backend.schemas.groups as group_schema
+import backend.schemas.users as user_schema
 from backend.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -37,6 +38,10 @@ def create_group(user_id: int, group: group_schema.GroupBase, db: Session = Depe
 def get_group(group_id: int, db: Session = Depends(get_db)):
     return crud.get_group_by_groupid(db, group_id)
 
+@router.get("/get-group-members/{group_id}")
+def get_group_members(group_id: int, db: Session = Depends(get_db)):
+    return crud.get_group_members(db, group_id)
+
 @router.get("/all-user-groups/{user_id}")
 def get_all_user_groups(user_id:int, db: Session = Depends(get_db)):
     db_usergroups = crud.get_all_user_groups(db, user_id)
@@ -47,8 +52,8 @@ def get_all_user_groups(user_id:int, db: Session = Depends(get_db)):
 def add_members(group_id:int, members: List[int], db: Session = Depends(get_db)):
     db_group = try_get_entity(db, group_id)
     for member in members:
-        db_user = try_get_entity(db, user_id)
-        crud.add_user_group(db=db,group_id=group_id, member = member)
+        db_user = try_get_entity(db, member)
+        crud.add_user_group(db=db,group_id=group_id, user_id = member)
 
     return True
 
@@ -71,9 +76,9 @@ def remove_member(group_id: int, user_id: int, db: Session = Depends(get_db)):
     return crud.remove_admin_from_group(db,group_id=group_id, user_id = user_id)
 
 @router.post("/make-payment/{group_id}/{user_id}")
-def make_payment(group_id: int, user_id: int, balance:float, receiver_upi_id:str, users, splits, db: Session = Depends(get_db)):
+def make_payment(group_id: int, user_id: int, title:str, amount:float, users: List[int], splits:List[float], receiver_upi_id:str="", db: Session = Depends(get_db)):
     db_group = try_get_entity(db, group_id)
-    return crud.make_payment_from_group_wallet(db, group_id, user_id, balance, receiver_upi_id, users, splits)
+    return crud.make_payment_from_group_wallet(db, group_id, user_id, title, amount, transaction_date, receiver_upi_id, users, splits)
 
 @router.get("/wallet-details/{group_id}")
 def wallet_details(group_id: int, db: Session = Depends(get_db)):

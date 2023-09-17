@@ -7,7 +7,7 @@ import { ApiService } from '../api/api';
 function GroupPageScreen({ navigation }) {
 
   const [ group, setGroup ] = useState({ name: "" });
-  const [ wallet, setWallet ] = useState(null);
+  const [ wallet, setWallet ] = useState({ balance: 0});
   //   const [ groupDesposits, setGroupDeposits ] = useState([]);
   //   const [ groupExpenses, setGroupExpenses ] = useState([]);
   const [ groupTransactions, setGroupTransactions ] = useState([]);
@@ -22,8 +22,8 @@ function GroupPageScreen({ navigation }) {
       setGroup(_group);
       console.log(JSON.stringify(_group));
 
-      // const _wallet = await ApiService.getGroupWalletByGroupId(group_id);
-      // setWallet(_wallet);
+      const _wallet = await ApiService.getGroupWalletByGroupId(group_id);
+      setWallet(_wallet);
 
       // const _deposits = await ApiService.getIncomingTransactionsForGroup(group_id);
       // setGroupDeposits(_deposits);
@@ -75,6 +75,7 @@ function GroupPageScreen({ navigation }) {
       </View>
       <View>
         <Text>Wallet Details</Text>
+        <Text>{wallet.balance}</Text>
       </View>
       <View>
         <Text>Transactions</Text>
