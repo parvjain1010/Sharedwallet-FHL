@@ -68,7 +68,10 @@ function GroupPageScreen({ navigation }) {
         <Text>Group Page</Text>
         <Text>{group.name}</Text>
         <Button title="Group Settings" onPress={() => navigation.navigate("GroupSettings")} />
-        <Button title="Go Back" onPress={() => navigation.navigate("Home")} />
+        <Button title="Go Back" onPress={() => {
+          AsyncStorage.removeItem("currentGroupId");
+          navigation.navigate("Home");
+          }} />
       </View>
       <View>
         <Text>Wallet Details</Text>
@@ -81,7 +84,7 @@ function GroupPageScreen({ navigation }) {
       </View>
       <View>
         <Button title="Add Expense" onPress={() => navigation.navigate("AddExpense")} />
-        <Button title="Make Payment" onPress={() => navigation.navigate("MakePayment")} />
+        <Button title="Make Payment" onPress={() => navigation.navigate("MakePaymentScreen1")} />
       </View>
     </View>
   );
