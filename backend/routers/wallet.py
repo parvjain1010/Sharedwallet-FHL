@@ -194,3 +194,39 @@ def remove_money_from_personal_wallet(user_id: int, balance: float, db: Session 
         target_wallet_id=None,
         source_wallet_id= db_wallet.id
     ))
+
+@router.post("/make-payment-user/")
+def make_payment_user(user_id: int, transaction: str, amount: float, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_user_id(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=400, detail="User does not exist")
+    db_wallet = crud.get_wallet_by_user_id(db = db, user_id=user_id)
+    if db_wallet.balance <amount:
+        raise HTTPException(status_code=400, detail="Not Enough Money")
+    crud.update_wallet_balance(db=db, wallet_id=db_wallet.id, amount= -1*amount)
+    crud.create_transaction(db=db,transaction=transaction_schema.TransactionBase(
+        title=transaction,
+        amount = amount,
+        transaction_date= datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        user_id=user_id,
+        target_wallet_id=None,
+        source_wallet_id= db_wallet.id
+    ))
+
+@router.post("/make-payment-group/")
+def make_payment_group(group_id: int, transaction: str, amount: float, user_id:int, db: Session = Depends(get_db)):
+    db_group = crud.get_group_by_groupid(db, group_id=group_id)
+    if db_group is None:
+        raise HTTPException(status_code=400, detail="group does not exist")
+    db_wallet = crud.get_wallet_by_group_id(db = db, group_id=group_id)
+    if db_wallet.balance <amount:
+        raise HTTPException(status_code=400, detail="Not Enough Money")
+    crud.update_wallet_balance(db=db, wallet_id=db_wallet.id, amount= -1*amount)
+    crud.create_transaction(db=db,transaction=transaction_schema.TransactionBase(
+        title=transaction,
+        amount = amount,
+        transaction_date= datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        user_id=user_id,
+        target_wallet_id=None,
+        source_wallet_id= db_wallet.id
+    ))

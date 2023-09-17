@@ -18,6 +18,9 @@ import AddExpenseScreen from './AddExpenseScreen';
 import AddParticipantsScreen from './AddParticipantsScreen';
 import GroupPageScreen from './GroupPageScreen';
 import ExpenseSplitScreen from './ExpenseSplitScreen';
+// import FigmaHomeScreen from './FigmaHomeScreen';
+import MakePaymentScreen1 from './MakePaymentScreen1';
+import MakePaymentScreen2 from './MakePaymentScreen2';
 
 const Stack = createStackNavigator();
 
@@ -39,6 +42,9 @@ const Navigation = () => {
         <Stack.Screen name="ExpenseSplit" component={ExpenseSplitScreen} />
         <Stack.Screen name="GroupPage" component={GroupPageScreen} />
         <Stack.Screen name="AddParticipants" component={AddParticipantsScreen} />
+        {/* <Stack.Screen name="Figma" component={FigmaHomeScreen} /> */}
+        <Stack.Screen name="MakePaymentScreen1" component={MakePaymentScreen1} />
+        <Stack.Screen name="MakePaymentScreen2" component={MakePaymentScreen2} />
       </Stack.Navigator>
     </NavigationContainer>
   );

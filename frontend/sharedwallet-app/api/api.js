@@ -100,7 +100,7 @@ export class ApiService {
         try {
             const query_uri = `${BASE_URI}/groups/get-group/${groupId}`;
             const response = await axios.get(query_uri);
-            return response.data
+            return response.data;
         }
         catch (err) {
             console.error(`Error getting group from group id : ${groupId}`, err);
@@ -228,6 +228,34 @@ export class ApiService {
             return response.data;
         } catch (error) {
             console.error("Error fetching outgoing group transactions :", error);
+            throw error;
+        }
+    }
+    static async makePaymentViaGroup(group_id,transactionDetails, amount,user_id) {
+        try {
+            const gId = parseInt(group_id,10);
+            const uId = parseInt(user_id,10);
+            const amounttotransact = parseFloat(amount);
+            const api = `${BASE_URI}/wallet/make-payment-group/?group_id=${gId}&transaction=${transactionDetails}&amount=${amounttotransact}&user_id=${uId}`;
+            console.log(api);
+            const response = await axios.post(api);
+            return true;
+        } catch (error) {
+            console.error("Error adding group transaction:", error);
+            throw error;
+        }
+    }
+
+    static async makePaymentViaUser(userId,transactionDetails, amount) {
+        try {
+            const uId = parseInt(userId,10);
+            const amounttotransact = parseFloat(amount);
+            const api = `${BASE_URI}/wallet/make-payment-user/?user_id=${uId}&transaction=${transactionDetails}&amount=${amounttotransact}`;
+            console.log(api);
+            const response = await axios.post(api);
+            return true;
+        } catch (error) {
+            console.error("Error adding user transaction :", error);
             throw error;
         }
     }
