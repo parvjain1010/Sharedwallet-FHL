@@ -32,6 +32,18 @@ def get_db():
 def get_wallet_balance( db: Session = Depends(get_db)):
     return crud.get_wallets(db)
 
+@router.get("/get-wallet/{wallet_id}", response_model=wallet_schema.Wallet)
+def get_wallet(wallet_id, db: Session = Depends(get_db)):
+    return crud.get_wallet_by_wallet_id(db, wallet_id =wallet_id)
+
+@router.get("/get-user-wallet/{user_id}", response_model=wallet_schema.Wallet)
+def get_user_wallet(user_id, db: Session = Depends(get_db)):
+    return crud.get_wallet_for_user(db, user_id)
+
+@router.get("/get-group-wallet/{group_id}", response_model=wallet_schema.Wallet)
+def get_user_wallet(group_id, db: Session = Depends(get_db)):
+    return crud.get_wallet_for_group(db, group_id)
+
 @router.get("/get-balance/{wallet_id}", response_model=float)
 def get_wallet_balance(wallet_id:int, db: Session = Depends(get_db)):
     db_wallet = crud.get_wallet_by_wallet_id(db, wallet_id =wallet_id)

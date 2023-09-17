@@ -76,6 +76,7 @@ def get_outgoing_transactions(db: Session, wallet_id: int):
 
 def get_all_transaction_by_wallet_id(db: Session, wallet_id: int):
     return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id or models.Transaction.target_wallet_id == wallet_id).first()
+
 def get_wallet_for_group(db: Session, group_id: int):
     return db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first()
 
@@ -107,7 +108,7 @@ def create_transaction(db: Session, transaction: transaction_schema.TransactionB
     return db_transaction
 
 def add_transaction_split(db:Session, transaction_id, user_id, user_split, group_id=-1):
-    tsplit = models.splitTransaction(
+    tsplit = models.splitTransactions(
         user_id = user_id,
         group_id = group_id,
         transaction_id = transaction_id,
@@ -130,7 +131,6 @@ def update_transaction(db: Session, transaction: transaction_schema.Transaction)
         db.refresh(db_transaction)
 
     return db_transaction
-
 
 def remove_transaction(db: Session, transaction_id: int):
     items_to_delete = db.query(models.Transaction).filter(models.Transaction.id == transaction_id).all()
@@ -188,6 +188,10 @@ def create_group(db: Session, group: group_schema.Group):
 
 def get_all_user_groups(db: Session, user_id: int):
     return db.query(models.userGroup).filter(models.userGroup.user_id == user_id).all()
+
+def get_group_members(db:Session, group_id:int):
+    return db.query(models.userGroup).join(models.User, models.userGroup.user_id == models.User.id).filter(
+        models.userGroup.group_id == group_id).all()
 
 def add_user_group(db: Session, group_id : int, user_id: int):
     db_user_group = models.userGroup(
@@ -337,14 +341,13 @@ def get_group_user_splits(db: Session, group_id: int, user_id:int):
     
     return user_split
     
-def make_payment_from_group_wallet(db: Session, group_id: int, user_id:int, amount:float, receiver_upi_id:str, users, splits, title:str):
+def make_payment_from_group_wallet(db: Session, group_id: int, user_id:int, title:str, amount:float, transaction_date:str, receiver_upi_id:str, users, splits):
     # Add transaction
     wallet = db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first()
-    payment_transaction = models.TransactionBase(
+    payment_transaction = models.Transaction(
         title = title,
         amount = amount,
-        transaction_date = "",
-        group_id = group_id,
+        transaction_date = transaction_date,
         user_id = user_id,
         target_wallet_id = None,
         source_wallet_id = wallet.id        
