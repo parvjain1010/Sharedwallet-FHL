@@ -12,6 +12,9 @@ export default function AllScreens ({navigation}) {
       <Button title="Wallet Screen" onPress = {() => navigation.navigate('UserWallet')}/>
       <Button title="Add Money to Wallet Screen" onPress = {() => navigation.navigate('AddMoneyToWallet')}/>
       <Button title="Transactions Screen" onPress = {() => navigation.navigate('Transactions')}/>
+      {/* <Button title="Figma Screen" onPress = {() => navigation.navigate('Figma')}/> */}
+      <Button title="Make Payment Screen 1" onPress = {() => navigation.navigate('MakePaymentScreen1')}/>
+      <Button title="Make Payment Screen 2" onPress = {() => navigation.navigate('MakePaymentScreen2')}/>
     </View>
   )
 }
