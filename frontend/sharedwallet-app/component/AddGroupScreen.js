@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, TextInput, Image, FlatList } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ApiService, GroupService } from '../api/api';
+import { ApiService } from '../api/api';
 import RadioButton from './atoms/RadioButton';
 
 function HomeScreen({ navigation }) {
@@ -26,7 +26,7 @@ function HomeScreen({ navigation }) {
       navigation.navigate('Start');
     }
 
-    const group_id = GroupService.createGroup(user_id, groupname, groupDescription, expenseType, budgetAmount);
+    const group_id = ApiService.createGroup(user_id, groupname, groupDescription, expenseType, budgetAmount);
     if (group_id === -1) {
       Alert.alert('Error', 'Group was not created');
     }

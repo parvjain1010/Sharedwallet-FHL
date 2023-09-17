@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, FlatList } from 'react-native';
+import { View, Text, Button, Image, FlatList, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import homescrenbutton from './images/HomescreenButton.png'
 import { ApiService } from '../api/api';
 
 function HomeScreen({ navigation }) {
-  const [userId, setUserId] = useState('1');
-  const [walletBalance, setWalletBalance] = useState(null);
-  const [groups, setGroups] = useState([]);
+  const [ userId, setUserId ] = useState('1');
+  const [ walletBalance, setWalletBalance ] = useState(null);
+  const [ groups, setGroups ] = useState([]);
 
 
   useEffect(() => {
@@ -37,7 +37,7 @@ function HomeScreen({ navigation }) {
 
     return unsubscribe;
 
-  }, [navigation]); // Include navigation in the dependency array
+  }, [ navigation ]); // Include navigation in the dependency array
 
   const renderItem = ({ item }) => (
     <View>
@@ -56,7 +56,7 @@ function HomeScreen({ navigation }) {
   const fetchUserGroupsAPI = async (userId) => {
     // Simulate an API call to fetch groups for the user
     // Replace this with your actual API endpoint
-    return { data: { groups: ['Group A', 'Group B', 'Group C'] } };
+    return { data: { groups: [ 'Group A', 'Group B', 'Group C' ] } };
   };
 
   const scanToPay = () => {
@@ -75,10 +75,19 @@ function HomeScreen({ navigation }) {
     console.log('On Wallet Page...');
   };
 
-  const renderGroupItem = ({ item }) => (
-    <View>
+  const navigateToGroupPage = async (group_id) => {
+    console.log("navigateToGroupPage");
+    console.log(group_id);
+    await AsyncStorage.setItem("currentGroupId", group_id.toString());
+    const _groupId = await AsyncStorage.getItem("currentGroupId");
+    console.log(_groupId);
+    navigation.navigate("GroupPage");
+  }
+
+  const renderGroupItem = ({ item, index }) => (
+    <Pressable key={index} onPress={() => navigateToGroupPage(item.id)} >
       <Text>Group Name: {item.name}</Text>
-    </View>
+    </Pressable>
   );
 
   return (
@@ -98,7 +107,7 @@ function HomeScreen({ navigation }) {
         <FlatList
           data={groups}
           renderItem={renderGroupItem}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id}
           ListEmptyComponent={<Text>No groups found.</Text>}
         />
       </View>)}
@@ -106,7 +115,7 @@ function HomeScreen({ navigation }) {
         {/* Bottom navigation */}
         <Button title="Home" />
         <Button title="Wallet" onPress={goToWallet} />
-        <Button title="+" onPress={() => navigation.navigate("AddGroup")}/>
+        <Button title="+" onPress={() => navigation.navigate("AddGroup")} />
         <Button title="History" onPress={() => navigation.navigate("Transactions")} />
         <Button title="Account" onPress={() => navigation.navigate("Profile")} />
         <Image
