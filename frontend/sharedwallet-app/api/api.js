@@ -1,13 +1,15 @@
 import axios from 'axios';
 
+// uvicorn backend.routers.main:app --host 10.104.248.78 --port 8000 --reload
 
-const BASE_URI = 'http://10.104.248.147:8000';
+const BASE_URI = 'http://10.104.248.78:8000';
 // const BASE_URI = 'http://10.94.248.91:8000';
 
-// uvicorn backend.routers.main:app --host 10.104.248.147 --port 8000 --reload
 
 export class ApiService {
-    static async getAllScreens() {
+
+    // User APIs
+    static async getAllUsers() {
         try {
             const response = await axios.get(`${BASE_URI}/users/all-users`);
             return response.data;
@@ -16,6 +18,7 @@ export class ApiService {
             throw error;
         }
     }
+    
     static async getUserByUserId(id) {
         try {
             const idval = parseInt(id,10);
@@ -27,6 +30,36 @@ export class ApiService {
             console.error("Error fetching user :", error);
             throw error;
         }
+    }
+
+    static async getGroupsForUserId(userId) {
+        try {
+            const uId = parseInt(userId,10);
+            const api = `${BASE_URI}/users/all-groups/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user groups :", error);
+            throw error;
+        }
+    }
+
+    static async getUpisForUserId(userId) {
+        try {
+            const uId = parseInt(userId,10);
+            const api = `${BASE_URI}/users/all-upis/${uId}`;
+            console.log(api);
+            const response = await axios.get(api);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user upis :", error);
+            throw error;
+        }
+    }
+
+    static async getWalletForUserId(userId) {
+
     }
 
     static async getWalletBalanceByUserId(id) {
@@ -43,6 +76,44 @@ export class ApiService {
             throw error;
         }
     }
+
+    // Group APIs
+    static async createGroup(userId, name, description, expense_type, budget) {
+        try {
+            const query_uri = `${BASE_URI}/groups/create-group/?user_id=${userId}`;
+            const response = await axios.post(query_uri, {
+                name: name,
+                description, description,
+                budget: budget,
+                expense_type: expense_type
+            });
+            console.log(JSON.stringify(response.data));
+            return response.data.id;
+        }
+        catch (err) {
+            console.error("Error creating group");
+            throw err;
+        }
+    }
+
+    static async getGroupByGroupId(groupId) {
+        try {
+            const query_uri = `${BASE_URI}/groups/get-group/${groupId}`;
+            const response = await axios.get(query_uri);
+            return response.data
+        }
+        catch (err) {
+            console.error(`Error getting group from group id : ${groupId}`, err);
+            throw err;
+        }
+    }
+
+    static async getGroupMembersByGroupId(groupId) {
+
+    }
+
+
+    // Deposits APIs
     static async addMoneyToPersonalWallet(userId,amount) {
         try {
             const uId = parseInt(userId,10);
@@ -56,29 +127,21 @@ export class ApiService {
             throw error;
         }
     }
-    static async getUpisForUserId(userId) {
-        try {
-            const uId = parseInt(userId,10);
-            const api = `${BASE_URI}/users/all-upis/${uId}`;
-            console.log(api);
-            const response = await axios.get(api);
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching user upis :", error);
-            throw error;
-        }
+
+    static async addMoneyToGroupWallet(groupId,userId,amount) {
+
     }
-    static async getGroupsForUserId(userId) {
-        try {
-            const uId = parseInt(userId,10);
-            const api = `${BASE_URI}/users/all-groups/${uId}`;
-            console.log(api);
-            const response = await axios.get(api);
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching user groups :", error);
-            throw error;
-        }
+
+    static async addMoneyToWallet(walletId,userId,amount) {
+
+    }
+    
+    // Expenses/Payments APIs
+    
+    
+    // Transactions API
+    static async getTransactionsForGroup(groupId) {
+
     }
 
     static async getIncomingTransactionsForUser(userId) {
@@ -132,27 +195,8 @@ export class ApiService {
             throw error;
         }
     }
-}
 
 
-export class GroupService {
-    static async createGroup(userId, name, description, expense_type, budget) {
-        try {
-            const query_uri = `${BASE_URI}/groups/create-group/?user_id=${userId}`;
-            const response = await axios.post(query_uri, {
-                name: name,
-                description, description,
-                budget: budget,
-                expense_type: expense_type
-            });
-            console.log(JSON.stringify(response.data));
-            return response.data.id;
-        }
-        catch (err) {
-            console.error("Error creating group");
-            throw err;
-        }
-    }
 }
 
 export class AuthService {
