@@ -76,9 +76,21 @@ def get_outgoing_transactions(db: Session, wallet_id: int):
 
 def get_all_transaction_by_wallet_id(db: Session, wallet_id: int):
     return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id or models.Transaction.target_wallet_id == wallet_id).first()
+def get_wallet_for_group(db: Session, group_id: int):
+    return db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first()
 
-def get_transaction_for_user(db: Session, user_id: int):
-    return db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
+def get_wallet_for_user(db:Session, user_id: int):
+    return db.query(models.Wallet).filter(models.Wallet.user_id == user_id).first()
+
+def get_transactions_for_group(db: Session, group_id: int):
+    wallet_id = get_wallet_for_group(db, group_id).id
+    return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id or 
+                                                                models.Transaction.target_wallet_id == wallet_id).all()
+
+def get_transactions_for_user(db: Session, user_id: int):
+    wallet_id = get_wallet_for_user(db, user_id).id
+    return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id or 
+                                                                models.Transaction.target_wallet_id == wallet_id).all()
 
 def create_transaction(db: Session, transaction: transaction_schema.TransactionBase):
     db_transaction = models.Transaction(
@@ -93,6 +105,18 @@ def create_transaction(db: Session, transaction: transaction_schema.TransactionB
     db.commit()
     db.refresh(db_transaction)
     return db_transaction
+
+def add_transaction_split(db:Session, transaction_id, user_id, user_split, group_id=-1):
+    tsplit = models.splitTransaction(
+        user_id = user_id,
+        group_id = group_id,
+        transaction_id = transaction_id,
+        your_split = user_split
+    )
+    db.add(tsplit)
+    db.commit()
+    db.refresh(tsplit)
+    return tsplit
 
 def update_transaction(db: Session, transaction: transaction_schema.Transaction):
     db_transaction = db.query(models.Transaction).filter(models.Transaction.id == transaction.id).first()
@@ -253,5 +277,87 @@ def update_wallet_balance(db: Session, wallet_id: int, amount: float):
 
     return db_wallet
 
+def get_group_members(db:Session, group_id: int):
+    return db.query(models.userGroup).filter(models.userGroup.group_id == group_id and models.userGroup.status).all()
 
+def get_group_deposits(db: Session, group_id: int):
+    wallet_id = db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first().id
+    return db.query(models.Transaction).filter(models.Transaction.target_wallet_id == wallet_id).all()
 
+def get_group_expenses(db: Session, group_id: int):
+    wallet_id = db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first().id
+    return db.query(models.Transaction).filter(models.Transaction.source_wallet_id == wallet_id).all()
+
+def get_wallet_details(db: Session, group_id: int):
+    wallet_id = db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first().id
+    group_transactions = get_transactions_for_group(db, group_id)
+    total_expenses, total_deposits = 0, 0
+    for transaction in group_transactions:
+        if transaction.source_wallet_id == wallet_id:
+            total_expenses += transaction.amount
+        else:
+            total_deposits += transaction.amount
+
+    wallet_details = dict()
+    wallet_details["balance"] = db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first().balance
+    wallet_details["total_deposit"] = total_deposits
+    wallet_details["total_expenses"] = total_expenses
+
+    return wallet_details
+
+def get_group_splits(db: Session, group_id: int):
+    group_transactions = get_transactions_for_group(db, group_id)
+    tids = { t.id : (1 if t.source_wallet_id is None else -1)*t.amount for t in group_transactions }
+
+    group_members = get_group_members(db, group_id)
+    tsplits = db.query(models.splitTransaction).filter(models.splitTransaction.transaction_id in tids.keys()).all()
+
+    user_split_amounts = { u.id:0 for u in members}
+
+    for ts in tsplits:
+        user_split_amounts[ts.user_id] += tids[ts.transaction_id] * ts.your_split
+
+    return user_split_amounts
+
+def get_group_user_splits(db: Session, group_id: int, user_id:int):
+    group_transactions = get_transactions_for_group(db, group_id)
+
+    tids = { t.id : (1 if t.source_wallet_id is None else -1)*t.amount for t in group_transactions }
+    inverse_gt = { t.id:t for t in group_transactions }
+    tsplits = db.query(models.splitTransaction).filter(models.splitTransaction.user_id == user_id and 
+                            models.splitTransaction.transaction_id in tids.keys()).all()
+
+    user_split = dict()
+    user_split["total"] = 0
+    user_split["transactions"] = []
+    for ts in tsplits:
+        amt = tids[ts.transaction_id] * ts.your_split
+        user_split["total"] += amt
+        user_split["transactions"].append([inverse_gt[ts.transaction_id],amt])
+    
+    return user_split
+    
+def make_payment_from_group_wallet(db: Session, group_id: int, user_id:int, amount:float, receiver_upi_id:str, users, splits, title:str):
+    # Add transaction
+    wallet = db.query(models.Wallet).filter(models.Wallet.group_id == group_id).first()
+    payment_transaction = models.TransactionBase(
+        title = title,
+        amount = amount,
+        transaction_date = "",
+        group_id = group_id,
+        user_id = user_id,
+        target_wallet_id = None,
+        source_wallet_id = wallet.id        
+    )
+    transaction = create_transaction(db, payment_transaction)
+
+    # Add transaction splits
+    for user_id, split in zip(users,splits):
+        add_transaction_split(db, transaction.id, user_id, split, group_id)
+
+    # Update wallet balance
+    wallet.balance -= amount
+    db.commit()
+    db.refresh(wallet)
+
+    return True

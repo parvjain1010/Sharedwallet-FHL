@@ -45,42 +45,77 @@ def get_all_user_groups(user_id:int, db: Session = Depends(get_db)):
 
 @router.post("/add-members/{group_id}")
 def add_members(group_id:int, members: List[int], db: Session = Depends(get_db)):
-    db_group = crud.get_group_by_groupid(db, group_id=group_id)
-    if db_group is None:
-        raise HTTPException(status_code=400, detail="Group doesnt exist anymore")
+    db_group = try_get_entity(db, group_id)
     for member in members:
-        db_user = crud.get_user_by_user_id(db, user_id=member)
-        if db_user is None:
-            raise HTTPException(status_code=400, detail="User doesnt exist anymore")
-        crud.add_user_group(db=db,group_id=group_id, user_id = member)
+        db_user = try_get_entity(db, user_id)
+        crud.add_user_group(db=db,group_id=group_id, member = member)
+
     return True
 
 @router.get("/remove-member/{group_id}/{user_id}", response_model=bool)
 def remove_member(group_id: int, user_id: int, db: Session = Depends(get_db)):
-    db_group = crud.get_group_by_groupid(db, group_id=group_id)
-    if db_group is None:
-        raise HTTPException(status_code=400, detail="Group doesnt exist anymore")
-    db_user = crud.get_user_by_user_id(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail="User doesnt exist anymore")
+    db_group = try_get_entity(db, group_id)
+    db_user = try_get_entity(db, user_id)
     return crud.remove_member_from_group(db,group_id=group_id, user_id = user_id)
 
 @router.get("/add-admin/{group_id}/{user_id}", response_model=bool)
 def add_admin(group_id: int, user_id: int, db: Session = Depends(get_db)):
-    db_group = crud.get_group_by_groupid(db, group_id=group_id)
-    if db_group is None:
-        raise HTTPException(status_code=400, detail="Group doesnt exist anymore")
-    db_user = crud.get_user_by_user_id(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail="User doesnt exist anymore")
+    db_group = try_get_entity(db, group_id)
+    db_user = try_get_entity(db, user_id)
     return crud.add_admin_for_group(db,group_id=group_id, user_id = user_id)
 
 @router.get("/remove-admin/{group_id}/{user_id}", response_model=bool)
 def remove_member(group_id: int, user_id: int, db: Session = Depends(get_db)):
-    db_group = crud.get_group_by_groupid(db, group_id=group_id)
-    if db_group is None:
-        raise HTTPException(status_code=400, detail="Group doesnt exist anymore")
-    db_user = crud.get_user_by_user_id(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail="User doesnt exist anymore")
+    db_group = try_get_entity(db, group_id)
+    db_user = try_get_entity(db, user_id)
     return crud.remove_admin_from_group(db,group_id=group_id, user_id = user_id)
+
+@router.post("/make-payment/{group_id}/{user_id}")
+def make_payment(group_id: int, user_id: int, balance:float, receiver_upi_id:str, users, splits, db: Session = Depends(get_db)):
+    db_group = try_get_entity(db, group_id)
+    return crud.make_payment_from_group_wallet(db, group_id, user_id, balance, receiver_upi_id, users, splits)
+
+@router.get("/wallet-details/{group_id}")
+def wallet_details(group_id: int, db: Session = Depends(get_db)):
+    db_group = try_get_entity(db, group_id)
+    return crud.get_wallet_details(db, group_id=group_id)
+
+@router.get("/get-splits/{group_id}")
+def get_splits(group_id: int, db: Session = Depends(get_db)):
+    db_group = try_get_entity(db, group_id)
+    return crud.get_group_splits(db, group_id)
+
+@router.get("/get-user-splits/{group_id}/{user_id}")
+def get_user_splits(group_id: int, user_id:int, db: Session = Depends(get_db)):
+    db_group = try_get_entity(db, group_id)
+    db_user = try_get_entity(db, user_id)
+    return crud.get_user_splits(db, group_id, user_id)
+
+@router.get("/list-expenses/{group_id}")
+def list_expenses(group_id: int, db: Session = Depends(get_db)):
+    db_group = try_get_entity(db, group_id)
+    return crud.get_group_expenses(db, group_id)
+
+@router.get("/list-deposits/{group_id}")
+def list_deposits(group_id: int, db: Session = Depends(get_db)):
+    db_group = try_get_entity(db, group_id)
+    return crud.get_group_depoits(db, group_id)
+
+
+
+# Helper methods
+
+def try_get_entity(db, entity_id, entity_type="group"):
+    entity = None
+    if entity_type == "group":
+        entity = crud.get_group_by_groupid(db, group_id=entity_id)
+    elif entity_type == "user":
+        entity = crud.get_user_by_user_id(db, user_id=entity_id)
+    else:
+        raise Exception(f"Invalid entity_type : {entity_type}")
+    
+    if entity is None:
+        raise HTTPException(status_code=400, detail=f"{entity_type} doesnt exist")
+    
+    return entity
+    
