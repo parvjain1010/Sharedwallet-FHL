@@ -64,7 +64,9 @@ function HomeScreen({ navigation }) {
   };
 
   const addMoneyToWallet = () => {
+
     console.log('Adding money to wallet...');
+    navigation.navigate("AddMoneyToWallet",{"walletfor": "User"})
   };
 
   const sendMoney = () => {

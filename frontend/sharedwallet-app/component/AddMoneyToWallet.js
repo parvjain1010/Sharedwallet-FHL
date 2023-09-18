@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddMoneyToWalletScreen = ({route, navigation }) => {
   const [userId, setuserId] = useState(null);
+  const [actualuserId, setactualuserId] = useState(null);
   // const [walletId, setwalletId] = useState(null);
   const [walletFor, setwalletFor] = useState(null);
   const [amount, setamount] = useState(0);
@@ -15,10 +16,12 @@ const AddMoneyToWalletScreen = ({route, navigation }) => {
     async function fetch_wallet_details() {
       console.log("Fetching is the current page is for user or group");
       
-      const curwalletFor = route.params?.walletfor || "User";
+      const curwalletFor = route.params.walletfor;
+      console.log(curwalletFor);
       setwalletFor(curwalletFor)
       console.log("Fetching current user or group");
-
+      let actualuserId = await AsyncStorage.getItem("userId");
+      setactualuserId(actualuserId);
       let storedValue;
       let curWallet = -1;
       if (curwalletFor === "User") {
@@ -28,7 +31,8 @@ const AddMoneyToWalletScreen = ({route, navigation }) => {
         // curWallet = await ApiService.getWalletIdForUser(storedValue);
         // setwalletId(curWallet);
       } else {
-        storedValue = await AsyncStorage.getItem("groupId");
+        storedValue = await AsyncStorage.getItem("currentGroupId");
+        console.log("This is group wallet!");
         setuserId(storedValue);
         // console.log("Fetching current wallet id");
         // curWallet = await ApiService.getWalletIdForGroup(storedValue);
@@ -43,9 +47,16 @@ const AddMoneyToWalletScreen = ({route, navigation }) => {
 
   const onAddMoneyClick = async() => {
     console.log("Add money to current wallet");
+    if(walletFor==="User"){
     await ApiService.addMoneyToPersonalWallet(userId,amount);
     console.log("Navigating back to user home page")
     navigation.navigate("Home");
+    }
+    else{
+      await ApiService.addMoneyToGroupWallet(userId,actualuserId,amount);
+    console.log("Navigating back to Group home page")
+    navigation.navigate("GroupPage");
+    }
   }
   return (
     <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 20 }}>

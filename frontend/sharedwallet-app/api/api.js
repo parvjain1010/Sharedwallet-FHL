@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // uvicorn backend.routers.main:app --host 192.168.29.84 --port 8000 --reload
 
-const BASE_URI = 'http://192.168.29.84:8000';
-// const BASE_URI = 'http://10.94.248.91:8000';
+// const BASE_URI = 'http://192.168.29.84:8000';
+const BASE_URI = 'http://192.168.1.48:8000';
 
 
 export class ApiService {
@@ -149,7 +149,18 @@ export class ApiService {
     }
 
     static async addMoneyToGroupWallet(groupId,userId,amount) {
-
+        try {
+            const uId = parseInt(userId,10);
+            const gId = parseInt(groupId,10);
+            const amounttobeAdded = parseFloat(amount);
+            const api = `${BASE_URI}/wallet/add_money_to_group_wallet/?user_id=${uId}&group_id=${gId}&balance=${amounttobeAdded}`;
+            console.log(api);
+            const response = await axios.post(api);
+            return true;
+        } catch (error) {
+            console.error("Error adding money to wallet :", error);
+            throw error;
+        }
     }
 
     static async addMoneyToWallet(walletId,userId,amount) {

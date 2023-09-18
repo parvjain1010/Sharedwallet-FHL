@@ -85,6 +85,7 @@ function GroupPageScreen({ navigation }) {
       </View>
       <View>
         <Button title="Add Expense" onPress={() => navigation.navigate("AddExpense")} />
+        <Button title="Add Money to Group Wallet" onPress={() => {navigation.navigate("AddMoneyToWallet",{"walletfor": "Group"})} }/>
         <Button title="Make Payment" onPress={() => navigation.navigate("MakePaymentScreen1")} />
       </View>
     </View>
