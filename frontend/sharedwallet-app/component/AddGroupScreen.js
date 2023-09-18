@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, Image, FlatList } from 'react-native';
+import { View, Image, FlatList } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApiService } from '../api/api';
-import RadioButton from './atoms/RadioButton';
+import { Layout, Text, Input, Button, List, Card, withStyles } from '@ui-kitten/components';
+// import RadioButtonGroup from './atoms/RadioButton';
+import { Radio, RadioGroup } from '@ui-kitten/components';
 
-function HomeScreen({ navigation }) {
+function AddGroupScreenCore({ eva, navigation, ...props }) {
 
   const [ groupname, setGroupname ] = useState('');
   const [ expenseType, setExpenseType ] = useState("One Time");
@@ -38,33 +40,73 @@ function HomeScreen({ navigation }) {
   };
 
   return (
-    <View>
-      <View>
-        <Text>Add Group</Text>
-        <Button title="Go Back" onPress={() => navigation.navigate("Home")} />
-      </View>
-      <View>
-        <Text>Group Name</Text>
-        <TextInput value={groupname} onChangeText={setGroupname}
-          placeholder="Enter a name"
-          style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}></TextInput>
-        <Text>Type of expenses</Text>
-        <RadioButton data={expenseTypes} onSelect={(value) => setExpenseType(value)}></RadioButton>
-        <Text>Group Budget ( approx )</Text>
-        <TextInput value={budgetAmount.toString()} onChangeText={setBudgetAmount}
-          placeholder="Enter an amount"
-          style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}></TextInput>
-        <Text>Description</Text>
-        <TextInput value={groupDescription} onChangeText={setGroupDescription}
-          placeholder="Enter your text"
-          style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}></TextInput>
-      </View>
-      <View>
-        {/* Bottom navigation */}
-        <Button title="Create Group" onPress={createGroup} />
-      </View>
-    </View>
+    <Layout style={eva.style.container}>
+      <Text category="h3" style={eva.style.title}>Add Group</Text>
+
+      <Input style={eva.style.input} value={groupname}
+        onChangeText={setGroupname} placeholder="Group Name" />
+      <Input style={eva.style.input} value={groupname}
+        onChangeText={setGroupname} placeholder="Group Name" />
+      <Input style={eva.style.input} value={budgetAmount.toString()}
+        onChangeText={setBudgetAmount} placeholder="Budget Amount" />
+      <Input style={eva.style.input} value={groupDescription}
+        onChangeText={setGroupDescription} placeholder="Desription" />
+<Layout
+      style={eva.style.containerrow}
+      level='1'
+    >
+
+      <RadioGroup>
+        <Radio>One Time</Radio>
+        <Radio>Recurring</Radio>
+      </RadioGroup>
+    </Layout>
+      <Button style={eva.style.button} onPress={createGroup}>Create Group</Button>
+      {/* <RadioButtonGroup data={expenseTypes} onSelect={(value) => setExpenseType(value)}></RadioButtonGroup> */}
+    </Layout>
   );
 }
 
-export default HomeScreen;
+const AddGroupScreen = withStyles(AddGroupScreenCore, (theme) => ({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 8,
+    backgroundColor: theme[ 'background-basic-color-1' ],
+  },
+  containerrow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  radio: {
+    margin: 2,
+  },
+  container2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'left',
+    padding: 8,
+    backgroundColor: theme[ 'background-basic-color-1' ],
+  },
+  title: {
+    marginVertical: 8,
+  },
+  card: {
+    width: '100%',
+    padding: 4,
+  },
+  input: {
+    marginVertical: 8,
+    width: '100%',
+  },
+  button: {
+    marginVertical: 16,
+    width: '100%',
+  },
+  text: {
+    marginVertical: 4, // Adjust as needed
+  },
+}));
+
+
+export default AddGroupScreen;
