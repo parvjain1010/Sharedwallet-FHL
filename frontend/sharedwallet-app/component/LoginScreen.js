@@ -1,23 +1,23 @@
-import { View, TextInput, Button, Alert } from 'react-native';
+import { View, TextInput, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { AuthService } from '../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Layout, Text, Input, Button, withStyles } from '@ui-kitten/components';
 
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const userId = "-1";
+const LoginScreenCore = ({ eva, navigation, ...props }) => {
+
+  const [ email, setEmail ] = useState('');
+  const [ password, setPassword ] = useState('');
 
   const handleLogin = async () => {
-    // Mock authentication for the sake of this example
-    const user_id = await AuthService.login(username, password);
+    const user_id = await AuthService.login(email, password);
     if (user_id !== -1) {
       await AsyncStorage.setItem("userId", user_id.toString());
       const checkSavedId = await AsyncStorage.getItem("userId");
       console.log("From Login Screen");
       console.log(checkSavedId);
-      navigation.navigate('Home');
+      navigation.navigate('UserTab');
     } else {
       Alert.alert('Error', 'Invalid credentials');
     }
@@ -25,26 +25,53 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
 
-  }, [navigation])
+  }, [ navigation ])
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 20 }}>
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
-        style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}
+    <Layout style={eva.style.container}>
+      <Text category="h2" style={eva.style.title}>Welcome to hisaab</Text>
+      <Input
+        style={eva.style.input}
+        value={email}
+        placeholder="Email"
+        onChangeText={setEmail}
       />
-      <TextInput
+
+      <Input
+        style={eva.style.input}
         value={password}
-        onChangeText={setPassword}
         placeholder="Password"
         secureTextEntry
-        style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}
+        onChangeText={setPassword}
       />
-      <Button title="Login" onPress={handleLogin} />
-    </View>
+
+      <Button style={eva.style.button} onPress={handleLogin}>
+        LOGIN
+      </Button>
+
+    </Layout>
   );
 };
+
+const LoginScreen = withStyles(LoginScreenCore, (theme) => ({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: theme[ 'background-basic-color-1' ],
+  },
+  title: {
+    marginVertical: 8,
+  },
+  input: {
+    marginVertical: 8,
+    width: '100%',
+  },
+  button: {
+    marginVertical: 16,
+    width: '100%',
+  },
+}));
 
 export default LoginScreen;

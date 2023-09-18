@@ -1,8 +1,10 @@
-import { View, TextInput, Button, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { AuthService } from '../api/api';
+import { Layout, Text, Input, Button, withStyles } from '@ui-kitten/components';
 
-const RegisterScreen = ({ navigation }) => {
+
+const RegisterScreenCore = ({ eva, navigation, ...props }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,42 +13,64 @@ const RegisterScreen = ({ navigation }) => {
   const handleRegister = () => {
     const user_id = AuthService.register(name, email, password, phone)
     if (user_id !== -1) {
-      navigation.navigate('Home');
+      navigation.navigate('Login');
     } else {
       Alert.alert('Error', 'Could not register the user');
     }
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 20 }}>
-      <TextInput
+    <Layout style={eva.style.container}>
+      <Text category="h2" style={eva.style.title}>Register !!</Text>
+      <Input
+      style={eva.style.input}
         value={name}
         onChangeText={setName}
         placeholder="Full Name"
-        style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}
-      />
-      <TextInput
+        />
+      <Input
+      style={eva.style.input}
         value={email}
         onChangeText={setEmail}
         placeholder="Email ID"
-        style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}
-      />
-      <TextInput
+        />
+      <Input
+      style={eva.style.input}
         value={password}
         onChangeText={setPassword}
         placeholder="Password"
         secureTextEntry
-        style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}
-      />
-      <TextInput
+        />
+      <Input
+      style={eva.style.input}
         value={phone}
         onChangeText={setPhone}
         placeholder="Phone No"
-        style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 10 }}
-      />
-      <Button title="Register" onPress={handleRegister} />
-    </View>
+        />
+      <Button style={eva.style.button} onPress={handleRegister}>Register</Button>
+        </Layout>
   );
 };
+
+const RegisterScreen = withStyles(RegisterScreenCore, (theme) => ({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: theme[ 'background-basic-color-1' ],
+  },
+  title: {
+    marginVertical: 8,
+  },
+  input: {
+    marginVertical: 8,
+    width: '100%',
+  },
+  button: {
+    marginVertical: 16,
+    width: '100%',
+  },
+}));
 
 export default RegisterScreen;
